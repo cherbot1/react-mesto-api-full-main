@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 const NotFoundError = require('./utils/errors/NotFoundErr');
@@ -19,6 +20,8 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
 });
 
 const app = express();
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
