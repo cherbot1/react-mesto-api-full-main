@@ -27,7 +27,7 @@ function App() {
     const [selectedCard, setSelectedCard] = React.useState({});
     const [currentUser, setCurrentUser] = React.useState({});
     const [cards, setCards] = React.useState([]);
-    const [userEmail, setUserEmail] = React.useState('blob@blob.com');
+    const [userEmail, setUserEmail] = React.useState('');
     const history = useHistory();
 
 
@@ -37,8 +37,6 @@ function App() {
 
     React.useEffect(() => {
         if (loggedIn) {
-            history.push('/');
-
             api.getUserInfo().then((data) => {
                 setCurrentUser(data);
             })
@@ -174,6 +172,7 @@ function App() {
                 localStorage.setItem("jwt", data.token);
                 setIsLoggedIn(true);
                 setUserEmail(email);
+                history.push('/');
             }
         })
             .catch((err) => {
