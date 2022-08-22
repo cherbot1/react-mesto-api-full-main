@@ -37,6 +37,8 @@ function App() {
 
     React.useEffect(() => {
         if (loggedIn) {
+            history.push('/');
+
             api.getUserInfo().then((data) => {
                 setCurrentUser(data);
             })
@@ -172,7 +174,6 @@ function App() {
                 localStorage.setItem("jwt", data.jwt);
                 setIsLoggedIn(true);
                 setUserEmail(email);
-                history.push('/');
             }
         })
             .catch((err) => {
