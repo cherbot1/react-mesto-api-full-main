@@ -1,0 +1,24 @@
+.element__image-wrapper {
+    width: 282px;
+    height: 282px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+@media screen and (max-width: 930px) {
+    .element__image-wrapper {
+        align-items: center;
+        width: 100%;
+        max-width: 340px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .element__image-wrapper {
+        max-width: 282px;
+    }
+}

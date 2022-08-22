@@ -1,0 +1,11 @@
+.profile__avatar-container{
+    margin-right: 30px;
+    cursor: pointer;
+    position: relative;
+}
+
+@media screen and (max-width: 507px) {
+    .profile__avatar-container {
+        margin: 0;
+    }
+}

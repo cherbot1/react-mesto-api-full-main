@@ -1,0 +1,21 @@
+.popup-change-avatar__button{
+    max-width: 358px;
+    width: 100%;
+    height: 50px;
+    background-color: #000;
+    color: #FFF;
+    font-size: 1.125rem;
+    border: none;
+    cursor: pointer;
+    margin: 48px 0 0 0;
+}
+
+.popup-change-avatar__button:hover {
+    opacity: 80%;
+}
+
+@media screen and (max-width: 739px) {
+    .popup-change-avatar__button {
+        font-size: 0.875rem;
+    }
+}

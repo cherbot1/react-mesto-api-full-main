@@ -1,0 +1,26 @@
+.popup-confirm__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #ffffff;
+    max-width: 430px;
+    max-height: 181px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    border-radius: 10px;
+    padding: 34px 36px 36px 36px;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 739px) {
+    .popup-confirm__form {
+        max-width: 282px;
+        padding: 25px 22px;
+    }
+}

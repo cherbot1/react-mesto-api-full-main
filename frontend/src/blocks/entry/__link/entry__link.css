@@ -1,0 +1,12 @@
+.entry__link {
+    text-decoration: none;
+    color: #fff;
+    font-size: 0.875rem;
+    line-height: 1.21;
+    padding: 0;
+    margin: 0;
+}
+
+.entry__link:hover {
+    opacity: 85%;
+}

@@ -1,0 +1,9 @@
+.element__figcaption {
+    font-weight: 900;
+    color: #000;
+    font-size: 1.5rem;
+    line-height: 1.21;
+    display: flex;
+    justify-content: space-between;
+    padding: 25px 20px;
+}

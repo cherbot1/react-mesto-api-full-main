@@ -1,0 +1,9 @@
+.popup-info__text {
+    color: #000;
+    margin: 32px 0 0 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1.21;
+    text-align: center;
+    max-width: 358px;
+}

@@ -1,0 +1,10 @@
+.element__figure {
+    margin: 0;
+    padding: 0;
+}
+
+@media screen and (max-width: 400px){
+    .element__figure {
+        max-width: 282px;
+    }
+}
