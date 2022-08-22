@@ -87,7 +87,7 @@ class Api {
 }
 
 export const api = new Api({
-    baseUrl: 'api.cherbot1.students.nomoredomains.sbs/',
+    url: 'api.cherbot1.students.nomoredomains.sbs/',
     headers: {
         "Content-Type": 'application/json'
     }

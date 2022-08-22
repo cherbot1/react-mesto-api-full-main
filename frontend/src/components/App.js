@@ -168,8 +168,8 @@ function App() {
     /* Обработка входа */
     function handleLogin({password, email}) {
         authorize(password, email).then((data) => {
-            if (data.token) {
-                localStorage.setItem("jwt", data.token);
+            if (data.jwt) {
+                localStorage.setItem("jwt", data.jwt);
                 setIsLoggedIn(true);
                 setUserEmail(email);
                 history.push('/');
