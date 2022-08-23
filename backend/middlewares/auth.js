@@ -5,6 +5,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
+    console.log(authorization);
     next(new UnauthorizedError('Необходима авторизация 1'));
     return;
   }
