@@ -14,7 +14,7 @@ const {
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const corsOptions = {
-  origin: 'https://cherbot1.nomoredomains.sbs/',
+  origin: 'https://cherbot1.nomoredomains.sbs',
   credentials: true,
   optionsSuccessStatus: 200,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
