@@ -1,7 +1,7 @@
 class Api {
-    constructor(config) {
-        this._url = config.url;
-        this._headers = config.headers;
+    constructor({ url, headers }) {
+        this._headers = headers;
+        this._url = url;
     }
 
     /* Обработка ответа */
@@ -89,7 +89,8 @@ class Api {
 export const api = new Api({
     url: 'api.cherbot1.students.nomoredomains.sbs/',
     headers: {
-        "Content-Type": 'application/json'
-    }
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        "Content-Type": "application/json",
+    },
 });
 
