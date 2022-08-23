@@ -56,10 +56,8 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(auth);
-
-app.use('/cards', require('./routes/cards'));
-app.use('/users', require('./routes/users'));
+app.use('/cards', auth, require('./routes/cards'));
+app.use('/users', auth, require('./routes/users'));
 
 app.use('/*', () => {
   throw new NotFoundError('Страницы не существует');
