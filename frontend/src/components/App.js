@@ -27,7 +27,7 @@ function App() {
     const [selectedCard, setSelectedCard] = React.useState({});
     const [currentUser, setCurrentUser] = React.useState({});
     const [cards, setCards] = React.useState([]);
-    const [userEmail, setUserEmail] = React.useState('');
+    const [userEmail, setUserEmail] = React.useState('blob@blob.com');
     const history = useHistory();
 
 
@@ -225,7 +225,7 @@ function App() {
                            />
                        </Route>
 
-                       <Route path="*">
+                       <Route>
                            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
                        </Route>
                    </Switch>
