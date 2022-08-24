@@ -32,26 +32,46 @@ function App() {
 
 
     React.useEffect(() => {
-        tokenCheck();
+        const jwt = localStorage.getItem('jwt');
+
+        if (jwt){
+            getContent(jwt).then((res) => {
+                if (res) {
+                    setIsLoggedIn(true);
+                    setUserEmail(res.data.email);
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
     }, [])
 
     React.useEffect(() => {
         if (loggedIn) {
+            console.log(cards);
+
+            api.getUserInfo().then((user) => {
+                setCurrentUser(user.data);
+            })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loggedIn])
+
+    React.useEffect(() => {
+        if (loggedIn) {
+            api.getCardsInfo().then((cardInfo) => {
+                setCards(cardInfo.data.reverse());
+            })
+                .catch((err) => {
+                    console.log(err);
+                });
+
             history.push('/');
-
-            api.getUserInfo().then((data) => {
-                setCurrentUser(data);
-            })
-                .catch((err) => {
-                    console.log(err);
-                });
-
-            api.getCardsInfo().then((data) => {
-                setCards(data);
-            })
-                .catch((err) => {
-                    console.log(err);
-                });
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,23 +153,6 @@ function App() {
             });
     }
 
-    /* Функция проверки токена */
-    function tokenCheck() {
-        const jwt = localStorage.getItem('jwt');
-
-        if (jwt){
-            getContent(jwt).then((res) => {
-                if (res) {
-                    setIsLoggedIn(true);
-                    setUserEmail(res.data.email);
-                }
-            })
-                .catch((err) => {
-                    console.log(err);
-                })
-        }
-    }
-
     /* Обработка регистрации */
     function handleRegister({password, email}) {
         register(password, email).then((res) => {
@@ -170,8 +173,8 @@ function App() {
     /* Обработка входа */
     function handleLogin({password, email}) {
         authorize(password, email).then((data) => {
-            if (data.token) {
-                localStorage.setItem("jwt", data.token);
+            if (data.jwt) {
+                localStorage.setItem("jwt", data.jwt);
                 setIsLoggedIn(true);
                 setUserEmail(email);
             }

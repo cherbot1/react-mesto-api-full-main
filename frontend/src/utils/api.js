@@ -23,15 +23,15 @@ class Api {
 
     /* Получение информации о карточках с сервера */
     getCardsInfo() {
-        return fetch(`https://mesto.${this._url}cards`, {
+        return fetch(`https://${this._url}cards`, {
             headers: this._headers
         })
-            .then(this._checkResponse);
+            .then(this._checkResponse)
     }
 
     /* Изменение информации о пользователе на сервере */
     changeUserInfo(data) {
-        return fetch(`https://mesto.${this._url}users/me`, {
+        return fetch(`https://${this._url}users/me`, {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
@@ -44,7 +44,7 @@ class Api {
 
     /* Добавление новой карточки на сервер*/
     addCard(data) {
-        return fetch(`https://mesto.${this._url}cards`, {
+        return fetch(`https://${this._url}cards`, {
             method: 'POST',
             headers: this._headers,
             body: JSON.stringify({
@@ -57,7 +57,7 @@ class Api {
 
     /* Удаление карточки с сервера */
     deleteCard(id) {
-        return fetch(`https://mesto.${this._url}cards/${id}`, {
+        return fetch(`https://${this._url}cards/${id}`, {
             method: 'DELETE',
             headers: this._headers,
         })
@@ -66,7 +66,7 @@ class Api {
 
     /* Меняем информацию об аватаре на сервере */
     changeAvatar(data) {
-        return fetch(`https://mesto.${this._url}users/me/avatar`, {
+        return fetch(`https://${this._url}users/me/avatar`, {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
@@ -78,7 +78,7 @@ class Api {
 
     /* Универсальный метод для постановки лайка */
     changeLikeCardStatus(id, like){
-        return fetch(`https://mesto.${this._url}cards/${id}/likes`, {
+        return fetch(`https://${this._url}cards/${id}/likes`, {
             method: like ? 'PUT' : 'DELETE',
             headers: this._headers,
         })
@@ -87,9 +87,9 @@ class Api {
 }
 
 export const api = new Api({
-    url: 'nomoreparties.co/v1/cohort-41/',
+    url: 'api.cherbot1.students.nomoredomains.sbs/',
     headers: {
-        authorization: 'aa481936-6a56-438a-a67e-3ded844326aa',
+        authorization: "Bearer " + localStorage.getItem("jwt"),
         "Content-Type": 'application/json'
     }
 });
