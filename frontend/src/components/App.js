@@ -32,19 +32,7 @@ function App() {
 
 
     React.useEffect(() => {
-        const jwt = localStorage.getItem('jwt');
-
-        if (jwt){
-            getContent(jwt).then((res) => {
-                if (res) {
-                    setIsLoggedIn(true);
-                    setUserEmail(res.data.email);
-                }
-            })
-                .catch((err) => {
-                    console.log(err);
-                })
-        }
+        tokenCheck();
     }, [])
 
     React.useEffect(() => {
@@ -68,8 +56,6 @@ function App() {
                 .catch((err) => {
                     console.log(err);
                 });
-
-            history.push('/');
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,6 +163,7 @@ function App() {
                 localStorage.setItem("jwt", data.jwt);
                 setIsLoggedIn(true);
                 setUserEmail(email);
+                history.push('/');
             }
         })
             .catch((err) => {
@@ -192,6 +179,24 @@ function App() {
         localStorage.removeItem('jwt');
         history.push('/sign-in');
         setIsLoggedIn(false);
+    }
+
+    /* Проверка токена */
+    function tokenCheck() {
+        const jwt = localStorage.getItem('jwt');
+
+        if (jwt){
+            getContent(jwt).then((res) => {
+                if (res) {
+                    setIsLoggedIn(true);
+                    setUserEmail(res.data.email);
+                    history.push('/');
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
     }
 
     return (
