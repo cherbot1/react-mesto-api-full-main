@@ -49,9 +49,7 @@ function App() {
 
     React.useEffect(() => {
         if (loggedIn) {
-            console.log(cards);
-
-            api.getUserInfo().then((user) => {
+           api.getUserInfo().then((user) => {
                 setCurrentUser(user.data);
             })
                 .catch((err) => {
@@ -78,11 +76,13 @@ function App() {
     }, [loggedIn])
 
     function handleCardLike(card) {
-        const isLiked = card.likes.some(i => i._id === currentUser._id);
-
+        const isLiked = card.likes.some((i) => i === currentUser._id);
+        console.log(isLiked);
         api.changeLikeCardStatus(card._id, !isLiked)
             .then((newCard) => {
-                setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+                setCards((state) =>
+                    state.map((c) =>
+                        c._id === card._id ? newCard.data : c));
             })
             .catch((err) => {
                 console.log(err);
@@ -124,8 +124,8 @@ function App() {
     }
 
     function handleUpdateUser(newData) {
-        api.changeUserInfo(newData).then((data) => {
-            setCurrentUser(data);
+        api.changeUserInfo(newData).then((user) => {
+            setCurrentUser(user.data);
             closeAllPopups();
         })
             .catch((err) => {
@@ -134,8 +134,8 @@ function App() {
     }
 
     function handleUpdateAvatar(newData) {
-        api.changeAvatar(newData).then((data) => {
-            setCurrentUser(data);
+        api.changeAvatar(newData).then((avatar) => {
+            setCurrentUser(avatar.data);
             closeAllPopups();
         })
             .catch((err) => {
@@ -145,7 +145,7 @@ function App() {
 
     function handleAddPlaceSubmit(data) {
         api.addCard(data).then((newCard) => {
-            setCards([newCard, ...cards]);
+            setCards([newCard.data, ...cards]);
             closeAllPopups();
         })
             .catch((err) => {

@@ -13,6 +13,8 @@ const {
 } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+require('dotenv').config();
+
 const options = {
   origin: [
     'https://cherbot1.nomoredomains.sbs',

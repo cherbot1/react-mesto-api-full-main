@@ -65,17 +65,16 @@ function Main({onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick, onCa
             </section>
             <section className="elements">
                 <ul className="elements__list">
-                    {Array.from(cards).map(function(card) {
-                            return (<li key={card._id}>
-                                    <Card
-                                        cardInfo={card}
-                                        onCardClick={onCardClick}
-                                        onCardLike={onCardLike}
-                                        onCardDelete={onCardDelete}
-                                    />
-                                </li>
-                            );
-                        }
+                    {cards.map((card) => (
+                            <li key={card._id}>
+                                <Card
+                                    cardInfo={card}
+                                    onCardClick={onCardClick}
+                                    onCardLike={onCardLike}
+                                    onCardDelete={onCardDelete}
+                                />
+                            </li>
+                        )
                     )}
                 </ul>
             </section>

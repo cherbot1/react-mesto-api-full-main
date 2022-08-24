@@ -9,6 +9,8 @@ const {
   CREATED,
 } = require('../utils/statuses/statuses');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 /* Логин */
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -17,7 +19,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        'key',
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
       res.status(OK).send({ jwt: token });
