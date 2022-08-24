@@ -13,6 +13,15 @@ const {
 } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const options = {
+  origin: [
+    'https://cherbot1.nomoredomains.sbs',
+    'http://cherbot1.nomoredomains.sbs',
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
@@ -21,7 +30,7 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
 
 const app = express();
 
-app.use(cors());
+app.use(cors(options));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
