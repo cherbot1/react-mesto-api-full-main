@@ -170,8 +170,8 @@ function App() {
     /* Обработка входа */
     function handleLogin({password, email}) {
         authorize(password, email).then((data) => {
-            if (data.jwt) {
-                localStorage.setItem("jwt", data.jwt);
+            if (data.token) {
+                localStorage.setItem("jwt", data.token);
                 setIsLoggedIn(true);
                 setUserEmail(email);
             }
