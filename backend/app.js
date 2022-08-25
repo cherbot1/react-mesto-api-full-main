@@ -15,6 +15,17 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 require('dotenv').config();
 
+const { PORT = 3000 } = process.env;
+
+const app = express();
+
+mongoose.connect('mongodb://127.0.0.1/mestodb', {
+  useNewUrlParser: true,
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const options = {
   origin: [
     'https://cherbot1.nomoredomains.sbs',
@@ -24,18 +35,7 @@ const options = {
   optionsSuccessStatus: 200,
 };
 
-const { PORT = 3000 } = process.env;
-
-mongoose.connect('mongodb://127.0.0.1/mestodb', {
-  useNewUrlParser: true,
-});
-
-const app = express();
-
 app.use(cors(options));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 
