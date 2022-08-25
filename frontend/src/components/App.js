@@ -18,6 +18,7 @@ import InfoTooltip from "./InfoTooltip";
 
 
 function App() {
+    const history = useHistory();
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
@@ -28,8 +29,6 @@ function App() {
     const [currentUser, setCurrentUser] = React.useState({});
     const [cards, setCards] = React.useState([]);
     const [userEmail, setUserEmail] = React.useState('blob@blob.com');
-    const history = useHistory();
-
 
     React.useEffect(() => {
         tokenCheck();
@@ -60,6 +59,24 @@ function App() {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loggedIn])
+
+    /* Проверка токена */
+    function tokenCheck() {
+        const jwt = localStorage.getItem('jwt');
+
+        if (jwt){
+            getContent(jwt).then((res) => {
+                if (res) {
+                    setIsLoggedIn(true);
+                    setUserEmail(res.data.email);
+                    history.push('/');
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+    }
 
     function handleCardLike(card) {
         const isLiked = card.likes.some((i) => i === currentUser._id);
@@ -181,23 +198,7 @@ function App() {
         setIsLoggedIn(false);
     }
 
-    /* Проверка токена */
-    function tokenCheck() {
-        const jwt = localStorage.getItem('jwt');
 
-        if (jwt){
-            getContent(jwt).then((res) => {
-                if (res) {
-                    setIsLoggedIn(true);
-                    setUserEmail(res.data.email);
-                    history.push('/');
-                }
-            })
-                .catch((err) => {
-                    console.log(err);
-                })
-        }
-    }
 
     return (
        <CurrentUserContext.Provider value={currentUser}>
