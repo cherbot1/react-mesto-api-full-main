@@ -42,6 +42,5 @@ export const getContent = (token) => {
         }
     })
         .then(checkResponse)
-        .then(data => data)
 };
 

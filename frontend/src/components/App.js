@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Header from "./Header";
 import Main from "./Main";
@@ -17,37 +17,42 @@ import InfoTooltip from "./InfoTooltip";
 
 
 function App() {
-    const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-    const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-    const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
-    const [registered, setRegistered] = React.useState(false);
-    const [selectedCard, setSelectedCard] = React.useState({});
-    const [currentUser, setCurrentUser] = React.useState({});
-    const [cards, setCards] = React.useState([]);
-    const [loggedIn, setIsLoggedIn] = React.useState(false);
-    const [userEmail, setUserEmail] = React.useState('blob@blob.com');
+    const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+    const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+    const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+    const [registered, setRegistered] = useState(false);
+    const [selectedCard, setSelectedCard] = useState({});
+    const [currentUser, setCurrentUser] = useState({});
+    const [cards, setCards] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userEmail, setUserEmail] = useState('blob@blob.com');
     const history = useHistory();
 
-    React.useEffect(() => {
-        const jwt = localStorage.getItem('jwt');
-
-        if (jwt){
-            getContent(jwt).then((user) => {
-                if (user) {
-                    setIsLoggedIn(true);
-                    setUserEmail(user.data.email);
-                    history.push('/');
-                }
+    /* Обработка входа */
+    function handleLogin({password, email}) {
+        authorize(password, email).then((data) => {
+            if (data) {
+                localStorage.setItem("jwt", data.token);
+                setUserEmail(email);
+                setIsLoggedIn(true);
+                history.push('/');
+            }
+        })
+            .catch((err) => {
+                setIsLoggedIn(false);
+                setRegistered(false);
+                setIsInfoTooltipOpen(true);
+                console.log(err);
             })
-                .catch((err) => {
-                    console.log(err);
-                })
-        }
+    }
+
+    useEffect(() => {
+        checkToken();
     }, [])
 
-    React.useEffect(() => {
-        if (loggedIn) {
+    useEffect(() => {
+        if (isLoggedIn) {
             api.getUserInfo().then((user) => {
                 setCurrentUser(user.data);
             })
@@ -62,25 +67,23 @@ function App() {
                     console.log(err);
                 });
         }
-    }, [loggedIn])
+    }, [isLoggedIn])
 
-    /* Обработка входа */
-    function handleLogin({password, email}) {
-        authorize(password, email).then((data) => {
-            if (data) {
-                localStorage.setItem("jwt", data.token);
-                console.log(localStorage.getItem('jwt'));
-                setIsLoggedIn(true);
-                setUserEmail(email);
-                history.push('/');
-            }
-        })
-            .catch((err) => {
-                setIsLoggedIn(false);
-                setRegistered(false);
-                setIsInfoTooltipOpen(true);
-                console.log(err);
+    function checkToken() {
+        const jwt = localStorage.getItem('jwt');
+
+        if (jwt){
+            getContent(jwt).then((user) => {
+                if (user) {
+                    setIsLoggedIn(true);
+                    setUserEmail(user.data.email);
+                    history.push('/');
+                }
             })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
     }
 
     function handleCardLike(card) {
@@ -199,7 +202,7 @@ function App() {
                    <ProtectedRoute
                        exact path = '/'
                        component={Main}
-                       loggedIn={loggedIn}
+                       loggedIn={isLoggedIn}
                        onEditAvatar = {handleEditAvatarClick}
                        onEditProfile = {handleEditProfileClick}
                        onAddPlace = {handleAddPlaceClick}
@@ -222,7 +225,7 @@ function App() {
                    </Route>
 
                    <Route>
-                       {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+                       {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
                    </Route>
                </Switch>
 
