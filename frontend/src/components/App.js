@@ -5,7 +5,6 @@ import Main from "./Main";
 import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
-import {LoggedInContext} from "../contexts/LoggedInContext";
 import {api} from "../utils/api";
 import {authorize, getContent, register} from '../utils/mestoAuth'
 import EditProfilePopup from "./EditProfilePopup";
@@ -18,57 +17,26 @@ import InfoTooltip from "./InfoTooltip";
 
 
 function App() {
-    const history = useHistory();
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
     const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
-    const [loggedIn, setIsLoggedIn] = React.useState(false);
     const [registered, setRegistered] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState({});
     const [currentUser, setCurrentUser] = React.useState({});
     const [cards, setCards] = React.useState([]);
+    const [loggedIn, setIsLoggedIn] = React.useState(false);
     const [userEmail, setUserEmail] = React.useState('blob@blob.com');
+    const history = useHistory();
 
     React.useEffect(() => {
-        tokenCheck();
-    }, [])
-
-    React.useEffect(() => {
-        if (loggedIn) {
-           api.getUserInfo().then((user) => {
-                setCurrentUser(user.data);
-            })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loggedIn])
-
-    React.useEffect(() => {
-        if (loggedIn) {
-            api.getCardsInfo().then((cardInfo) => {
-                setCards(cardInfo.data.reverse());
-            })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loggedIn])
-
-    /* Проверка токена */
-    function tokenCheck() {
         const jwt = localStorage.getItem('jwt');
 
         if (jwt){
-            getContent(jwt).then((res) => {
-                if (res) {
+            getContent(jwt).then((user) => {
+                if (user) {
                     setIsLoggedIn(true);
-                    setUserEmail(res.data.email);
+                    setUserEmail(user.data.email);
                     history.push('/');
                 }
             })
@@ -76,6 +44,43 @@ function App() {
                     console.log(err);
                 })
         }
+    }, [])
+
+    React.useEffect(() => {
+        if (loggedIn) {
+            api.getUserInfo().then((user) => {
+                setCurrentUser(user.data);
+            })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+            api.getCardsInfo().then((cardInfo) => {
+                setCards(cardInfo.data.reverse());
+            })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }, [loggedIn])
+
+    /* Обработка входа */
+    function handleLogin({password, email}) {
+        authorize(password, email).then((data) => {
+            if (data) {
+                localStorage.setItem("jwt", data.token);
+                console.log(localStorage.getItem('jwt'));
+                setIsLoggedIn(true);
+                setUserEmail(email);
+                history.push('/');
+            }
+        })
+            .catch((err) => {
+                setIsLoggedIn(false);
+                setRegistered(false);
+                setIsInfoTooltipOpen(true);
+                console.log(err);
+            })
     }
 
     function handleCardLike(card) {
@@ -173,106 +178,87 @@ function App() {
         })
     }
 
-    /* Обработка входа */
-    function handleLogin({password, email}) {
-        authorize(password, email).then((data) => {
-            if (data.jwt) {
-                localStorage.setItem("jwt", data.jwt);
-                setIsLoggedIn(true);
-                setUserEmail(email);
-                history.push('/');
-            }
-        })
-            .catch((err) => {
-                setIsLoggedIn(false);
-                setRegistered(false);
-                setIsInfoTooltipOpen(true);
-                console.log(err);
-            })
-    }
-
     /* Обработка выхода */
     function handleSignOut() {
         localStorage.removeItem('jwt');
-        history.push('/sign-in');
         setIsLoggedIn(false);
+        history.push('/sign-in');
     }
 
 
 
     return (
        <CurrentUserContext.Provider value={currentUser}>
-           <LoggedInContext.Provider value={loggedIn}>
-               <div className="App">
-                   <Header
-                       email={userEmail}
-                       onSignOut={handleSignOut}
+           <div className="App">
+               <Header
+                   email={userEmail}
+                   onSignOut={handleSignOut}
+               />
+
+               <Switch>
+                   <ProtectedRoute
+                       exact path = '/'
+                       component={Main}
+                       loggedIn={loggedIn}
+                       onEditAvatar = {handleEditAvatarClick}
+                       onEditProfile = {handleEditProfileClick}
+                       onAddPlace = {handleAddPlaceClick}
+                       onCardClick = {handleCardClick}
+                       cards = {cards}
+                       onCardLike = {handleCardLike}
+                       onCardDelete = {handleCardDelete}
                    />
 
-                   <Switch>
-                       <ProtectedRoute
-                           exact path = '/'
-                           component={Main}
-                           onEditAvatar = {handleEditAvatarClick}
-                           onEditProfile = {handleEditProfileClick}
-                           onAddPlace = {handleAddPlaceClick}
-                           onCardClick = {handleCardClick}
-                           cards = {cards}
-                           onCardLike = {handleCardLike}
-                           onCardDelete = {handleCardDelete}
+                   <Route path='/sign-up'>
+                       <Register
+                           onSubmit={handleRegister}
                        />
+                   </Route>
 
-                       <Route path='/sign-up'>
-                           <Register
-                               onSubmit={handleRegister}
-                           />
-                       </Route>
+                   <Route path='/sign-in'>
+                       <Login
+                           onSubmit={handleLogin}
+                       />
+                   </Route>
 
-                       <Route path='/sign-in'>
-                           <Login
-                               onSubmit={handleLogin}
-                           />
-                       </Route>
+                   <Route>
+                       {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+                   </Route>
+               </Switch>
 
-                       <Route>
-                           {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-                       </Route>
-                   </Switch>
+               <Footer />
 
-                   <Footer />
+               <EditProfilePopup
+                   isOpen = {isEditProfilePopupOpen}
+                   onClose = {closeAllPopups}
+                   onUpdateUser = {handleUpdateUser}
+               />
 
-                   <EditProfilePopup
-                       isOpen = {isEditProfilePopupOpen}
-                       onClose = {closeAllPopups}
-                       onUpdateUser = {handleUpdateUser}
-                   />
+               <AddPlacePopup
+                   isOpen = {isAddPlacePopupOpen}
+                   onClose = {closeAllPopups}
+                   onAddPlace = {handleAddPlaceSubmit}
+               />
 
-                   <AddPlacePopup
-                       isOpen = {isAddPlacePopupOpen}
-                       onClose = {closeAllPopups}
-                       onAddPlace = {handleAddPlaceSubmit}
-                   />
+               <EditAvatarPopup
+                   isOpen = {isEditAvatarPopupOpen}
+                   onClose = {closeAllPopups}
+                   onUpdateAvatar = {handleUpdateAvatar}
+               />
 
-                   <EditAvatarPopup
-                       isOpen = {isEditAvatarPopupOpen}
-                       onClose = {closeAllPopups}
-                       onUpdateAvatar = {handleUpdateAvatar}
-                   />
+               <ImagePopup
+                   card = {selectedCard}
+                   onClose = {closeAllPopups}
+               />
 
-                   <ImagePopup
-                       card = {selectedCard}
-                       onClose = {closeAllPopups}
-                   />
-
-                   <InfoTooltip
-                       isOpen = {isInfoTooltipOpen}
-                       onClose = {closeAllPopups}
-                       register = {registered}
-                       okText={'Вы успешно зарегистрировались!'}
-                       notOkText={'Что-то пошло не так! Попробуйте ещё раз.'}
-                   />
-               </div>
-           </LoggedInContext.Provider>
+               <InfoTooltip
+                   isOpen = {isInfoTooltipOpen}
+                   onClose = {closeAllPopups}
+                   register = {registered}
+                   okText={'Вы успешно зарегистрировались!'}
+                   notOkText={'Что-то пошло не так! Попробуйте ещё раз.'}
+               />
+           </div>
        </CurrentUserContext.Provider>
   );
 }
