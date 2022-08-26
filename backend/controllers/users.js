@@ -22,7 +22,7 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      res.status(OK).send({ jwt: token });
+      res.status(OK).send({ token });
     })
     .catch(next);
 };
