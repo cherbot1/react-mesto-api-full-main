@@ -53,14 +53,16 @@ function App() {
 
     useEffect(() => {
         if (isLoggedIn) {
-            api.getUserInfo().then((user) => {
+            const token = localStorage.getItem('jwt');
+
+            api.getUserInfo(token).then((user) => {
                 setCurrentUser(user.data);
             })
                 .catch((err) => {
                     console.log(err);
                 });
 
-            api.getCardsInfo().then((cardInfo) => {
+            api.getCardsInfo(token).then((cardInfo) => {
                 setCards(cardInfo.data.reverse());
             })
                 .catch((err) => {

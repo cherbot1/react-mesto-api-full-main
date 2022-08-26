@@ -14,17 +14,23 @@ class Api {
     }
 
     /* Получение информации о пользователе с сервера */
-    getUserInfo() {
+    getUserInfo(token) {
         return fetch(`https://${this._url}users/me`, {
-            headers: this._headers
+            headers: {
+                authorization: "Bearer " + token,
+                "Content-Type": 'application/json'
+            }
         })
             .then(this._checkResponse)
     }
 
     /* Получение информации о карточках с сервера */
-    getCardsInfo() {
+    getCardsInfo(token) {
         return fetch(`https://${this._url}cards`, {
-            headers: this._headers
+            headers: {
+                authorization: "Bearer " + token,
+                "Content-Type": 'application/json'
+            }
         })
             .then(this._checkResponse)
     }
