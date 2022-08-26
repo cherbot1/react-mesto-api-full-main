@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
+const cookieParser = require('cookie-parser');
 const NotFoundError = require('./utils/errors/NotFoundErr');
 const auth = require('./middlewares/auth');
 const serverError = require('./middlewares/serverErr');
@@ -36,6 +37,8 @@ const options = {
 };
 
 app.use(cors(options));
+
+app.use(cookieParser);
 
 app.use(requestLogger);
 
