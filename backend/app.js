@@ -26,7 +26,16 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+const options = {
+  origin: [
+    'https://cherbot1.nomoredomains.sbs',
+    'http://cherbot1.nomoredomains.sbs',
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(options));
 
 app.use(requestLogger);
 
@@ -64,10 +73,12 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/cards', auth, require('./routes/cards'));
-app.use('/users', auth, require('./routes/users'));
+app.use(auth);
 
-app.use('/*', auth, () => {
+app.use('/cards', require('./routes/cards'));
+app.use('/users', require('./routes/users'));
+
+app.use('/*', () => {
   throw new NotFoundError('Страницы не существует');
 });
 
