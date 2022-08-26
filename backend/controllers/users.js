@@ -15,18 +15,30 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  return User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res.cookie('authorization', token, { maxAge: 3600000 * 24 * 7 }).send({ message: 'Авторизация прошла успешно' });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
+      res.status(OK).send({ jwt: token });
     })
     .catch(next);
 };
 
 /* Поиск текущего пользователя */
 module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => res.send({ data: user }))
+  const { _id } = req.user;
+
+  User.findById(_id)
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError('Пользователь не найден'));
+        return;
+      }
+      res.status(OK).send({ data: user });
+    })
     .catch(next);
 };
 

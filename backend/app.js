@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
-const cookieParser = require('cookie-parser');
 const NotFoundError = require('./utils/errors/NotFoundErr');
 const auth = require('./middlewares/auth');
 const serverError = require('./middlewares/serverErr');
@@ -16,17 +15,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 require('dotenv').config();
 
-const { PORT = 3000 } = process.env;
-
-const app = express();
-
-mongoose.connect('mongodb://127.0.0.1/mestodb', {
-  useNewUrlParser: true,
-});
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 const options = {
   origin: [
     'https://cherbot1.nomoredomains.sbs',
@@ -36,9 +24,18 @@ const options = {
   optionsSuccessStatus: 200,
 };
 
+const { PORT = 3000 } = process.env;
+
+mongoose.connect('mongodb://127.0.0.1/mestodb', {
+  useNewUrlParser: true,
+});
+
+const app = express();
+
 app.use(cors(options));
 
-app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 
@@ -79,7 +76,7 @@ app.post('/signup', celebrate({
 app.use('/cards', auth, require('./routes/cards'));
 app.use('/users', auth, require('./routes/users'));
 
-app.use('/*', auth, () => {
+app.use('/*', () => {
   throw new NotFoundError('Страницы не существует');
 });
 
