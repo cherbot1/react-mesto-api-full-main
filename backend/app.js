@@ -26,16 +26,7 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const options = {
-  origin: [
-    'https://cherbot1.nomoredomains.sbs',
-    'http://cherbot1.nomoredomains.sbs',
-  ],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(options));
+app.use(cors());
 
 app.use(requestLogger);
 
