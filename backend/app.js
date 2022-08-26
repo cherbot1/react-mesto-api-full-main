@@ -4,8 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
-const NotFoundError = require('./utils/errors/NotFoundErr');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./utils/errors/NotFoundErr');
 const serverError = require('./middlewares/serverErr');
 const {
   createUser,
